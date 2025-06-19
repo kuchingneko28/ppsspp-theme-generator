@@ -59,7 +59,7 @@ input {
   position: relative;
 }
 .logo p {
-  color: var(--ItemStyleBg);
+  color: var(--ItemStyleFg);
   position: absolute;
 }
 .nav-links {
