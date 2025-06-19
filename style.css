@@ -1,0 +1,265 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+
+:root {
+  --ItemStyleFg: rgba(255, 255, 255, 1);
+  --ItemStyleBg: rgba(0, 0, 0, 0.5);
+
+  --ItemFocusedStyleFg: rgba(255, 255, 255, 1);
+  --ItemFocusedStyleBg: rgba(76, 194, 237, 1);
+
+  --ItemDownStyleFg: rgba(255, 255, 255, 1);
+  --ItemDownStyleBg: rgba(57, 153, 189, 1);
+
+  --ItemDisabledStyleFg: rgba(238, 238, 238, 0.5);
+  --ItemDisabledStyleBg: rgba(0, 0, 0, 0.5);
+
+  --InfoStyleFg: rgba(255, 255, 255, 1);
+  --InfoStyleBg: rgba(0, 0, 0, 0);
+
+  --PopupStyleFg: rgba(255, 255, 255, 1);
+  --PopupStyleBg: rgba(48, 48, 48, 0.5);
+
+  --HeaderStyleFg: rgba(255, 255, 255, 1);
+  --PopupTitleStyleFg: rgba(89, 190, 227, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+button,
+input {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.background-wrapper {
+  background: radial-gradient(circle at top left, rgba(0, 153, 255, 0.2), transparent 50%), radial-gradient(circle at bottom right, rgba(0, 0, 50, 0.4), transparent 60%), linear-gradient(to bottom right, #0c1a2b, #091d2f);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  max-width: 750px;
+  margin: auto;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+}
+.logo {
+  width: 150px;
+  position: relative;
+}
+.logo p {
+  color: var(--InfoStyleFg);
+  position: absolute;
+}
+.nav-links {
+  display: flex;
+  border-bottom: 4px solid var(--ItemDownStyleBg);
+  background-color: var(--ItemStyleBg);
+  color: var(--ItemStyleFg);
+}
+
+.nav-links p {
+  padding: 12px 15px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.nav-links p:hover,
+.active,
+.sidebar-links p:hover,
+.logout:hover {
+  background-color: var(--ItemDownStyleBg);
+}
+
+.logo-placeholder {
+  width: 30px;
+  height: 30px;
+  background-color: var(--ItemStyleBg);
+  padding: 12px;
+  margin-right: 12px;
+}
+.logo-container {
+  display: flex;
+  object-fit: cover;
+  align-items: center;
+  gap: 20px;
+}
+
+.main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 4px;
+  gap: 20px;
+}
+.game-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  gap: 8px;
+}
+.game-image {
+  width: 130px;
+  object-fit: cover;
+  box-shadow: 0px 1px 1px rgba(3, 7, 18, 0.02), 0px 5px 4px rgba(3, 7, 18, 0.03), 0px 12px 9px rgba(3, 7, 18, 0.05), 0px 20px 15px rgba(3, 7, 18, 0.06), 0px 32px 24px rgba(3, 7, 18, 0.08);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.sidebar-links {
+  background-color: var(--ItemStyleBg);
+  color: var(--ItemStyleFg);
+}
+
+.sidebar-links p {
+  padding: 12px 40px 12px 12px;
+}
+
+.sidebar-links p:last-child {
+  border-bottom: none;
+}
+
+.logout {
+  margin-top: 20px;
+  padding: 12px 40px 12px 12px;
+  background-color: var(--ItemStyleBg);
+  color: var(--ItemStyleFg);
+}
+.theme-generator {
+  background-color: #fff;
+  color: #222;
+  max-width: 750px;
+  padding: 20px;
+  margin: 16px auto;
+  border-radius: 8px;
+  box-shadow: 0px 1px 1px rgba(3, 7, 18, 0.02), 0px 5px 4px rgba(3, 7, 18, 0.03), 0px 12px 9px rgba(3, 7, 18, 0.05), 0px 20px 15px rgba(3, 7, 18, 0.06), 0px 32px 24px rgba(3, 7, 18, 0.08);
+}
+
+.theme-generator h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #111;
+  text-align: center;
+}
+
+.theme-generator label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+  color: #444;
+}
+
+.theme-generator input[type="text"] {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 16px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  color: #222;
+  margin-top: 16px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.theme-generator input[type="text"]:focus {
+  border-color: #38bdf8;
+  outline: none;
+  background-color: #fff;
+  box-shadow: 0px 1px 1px rgba(3, 7, 18, 0.02), 0px 5px 4px rgba(3, 7, 18, 0.03), 0px 12px 9px rgba(3, 7, 18, 0.05), 0px 20px 15px rgba(3, 7, 18, 0.06), 0px 32px 24px rgba(3, 7, 18, 0.08);
+}
+
+.color-inputs {
+  display: flex;
+  gap: 20px;
+  margin-top: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.color-inputs label {
+  flex: 1 1 150px;
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #444;
+}
+
+.color-inputs input[type="color"] {
+  margin-top: 8px;
+  width: 100%;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+
+.theme-generator button {
+  display: block;
+  width: 100%;
+  background-color: rgb(0, 0, 0);
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  user-select: none;
+}
+.footer {
+  text-align: center;
+  margin-top: 32px;
+  padding: 16px;
+  font-size: 14px;
+  color: #888;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 650px) {
+  .main {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 16px;
+  }
+  .nav-links {
+    flex-direction: column;
+  }
+  .navbar {
+    flex-direction: column;
+  }
+  .logo {
+    padding-top: 12px;
+    padding-left: 12px;
+  }
+
+  .game-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+}
