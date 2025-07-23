@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>PPSSPP Theme Generator</title>
+  </head>
+  <body>
+    <section class="theme-generator">
+      <h2>PPSSPP Theme Generator</h2>
+      <label>
+        <h4>Theme Name:</h4>
+        <input type="text" id="themeName" placeholder="Please input your theme name..." />
+      </label>
+      <div class="color-inputs">
+        <label>
+          <h4>Text Color:</h4>
+          <input type="color" id="ItemStyleFg" />
+          <input type="range" id="ItemStyleFgAlpha" min="0" max="1" step="0.01" value="1" />
+        </label>
+        <label>
+          <h4>Background Color:</h4>
+          <input type="color" id="ItemStyleBg" />
+          <input type="range" id="ItemStyleBgAlpha" min="0" max="1" step="0.01" value="1" />
+        </label>
+        <label>
+          <h4>Highlight Color:</h4>
+          <input type="color" id="ItemDownStyleBg" />
+          <input type="range" id="ItemDownStyleBgAlpha" min="0" max="1" step="0.01" value="1" />
+        </label>
+      </div>
+      <button onclick="generateIni()">Download Theme</button>
+    </section>
+
+    <div class="background-wrapper">
+      <nav class="navbar">
+        <div class="nav-links">
+          <p class="active">Recent</p>
+          <p>Games</p>
+          <p>Homebrew & Demos</p>
+        </div>
+        <div class="logo-container">
+          <div class="logo">
+            <img src="./logo.png" alt="Logo" />
+            <p>1.18.1</p>
+          </div>
+          <div class="logo-placeholder"></div>
+        </div>
+      </nav>
+
+      <main class="main">
+        <div class="game-container">
+          <img src="./game.jpg" alt="Game Preview" class="game-image" />
+        </div>
+        <aside class="sidebar">
+          <div class="sidebar-links">
+            <p>Load...</p>
+            <p class="active">Settings</p>
+            <p>Credits</p>
+            <p>www.ppsspp.org</p>
+            <p>Buy PPSSPP Gold <span>🛒</span></p>
+          </div>
+          <p class="logout">Exit</p>
+        </aside>
+      </main>
+    </div>
+    <footer class="footer">
+      <p>Created with meow 🐾 by Tuan Kuchiiing</p>
+    </footer>
+
+    <script>
+      const colorVars = {
+        ItemStyleFg: "--ItemStyleFg",
+        ItemStyleBg: "--ItemStyleBg",
+        ItemDownStyleBg: "--ItemDownStyleBg",
+      };
+
+      function hexToRgba(hex, alpha) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        Object.entries(colorVars).forEach(([id, cssVar]) => {
+          const input = document.getElementById(id);
+          const alphaInput = document.getElementById(id + "Alpha");
+
+          if (!input || !alphaInput) return;
+
+          const cssValue = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+
+          if (cssValue.startsWith("rgba")) {
+            const rgbaMatch = cssValue.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+            if (rgbaMatch) {
+              input.value = `#${[1, 2, 3].map((i) => parseInt(rgbaMatch[i]).toString(16).padStart(2, "0")).join("")}`;
+              alphaInput.value = parseFloat(rgbaMatch[4]);
+            }
+          }
+
+          function updateColor() {
+            const rgba = hexToRgba(input.value, alphaInput.value);
+            document.documentElement.style.setProperty(cssVar, rgba);
+          }
+
+          input.addEventListener("input", updateColor);
+          alphaInput.addEventListener("input", updateColor);
+        });
+      });
+
+      function rgbaToPPSSPP(rgba) {
+        const parts = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]*)?\)?/i);
+        if (!parts) return "0xff000000";
+        const r = parseInt(parts[1]);
+        const g = parseInt(parts[2]);
+        const b = parseInt(parts[3]);
+        const a = parts[4] === "" ? 1 : parseFloat(parts[4]);
+        const alpha = Math.round(a * 255);
+
+        return ("0x" + alpha.toString(16).padStart(2, "0") + b.toString(16).padStart(2, "0") + g.toString(16).padStart(2, "0") + r.toString(16).padStart(2, "0")).toLowerCase();
+      }
+
+      function generateIni() {
+        const name = document.getElementById("themeName").value.trim();
+        if (!name) {
+          alert("Please input theme name.");
+          return;
+        }
+
+        const rootStyles = getComputedStyle(document.documentElement);
+        const get = (id) => rgbaToPPSSPP(rootStyles.getPropertyValue(colorVars[id]).trim());
+
+        const theme = {
+          ItemStyleFg: get("ItemStyleFg"),
+          ItemStyleBg: get("ItemStyleBg"),
+          ItemFocusedStyleFg: get("ItemStyleFg"),
+          ItemFocusedStyleBg: get("ItemDownStyleBg"),
+          ItemDownStyleFg: get("ItemStyleFg"),
+          ItemDownStyleBg: get("ItemDownStyleBg"),
+          ItemDisabledStyleFg: get("ItemStyleFg"),
+          ItemDisabledStyleBg: get("ItemStyleBg"),
+          InfoStyleFg: get("ItemStyleFg"),
+          InfoStyleBg: get("ItemStyleBg"),
+          PopupStyleFg: get("ItemStyleFg"),
+          PopupStyleBg: get("ItemDownStyleBg"),
+          HeaderStyleFg: get("ItemStyleFg"),
+          PopupTitleStyleFg: get("ItemStyleFg"),
+        };
+
+        let ini = `[${name.replace(/\s+/g, "")}]\n`;
+        ini += `Name = ${name}\n`;
+        for (const [key, value] of Object.entries(theme)) {
+          ini += `${key} = ${value}\n`;
+        }
+
+        const blob = new Blob([ini], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${name}.ini`;
+        link.click();
+      }
+    </script>
+  </body>
+</html>
