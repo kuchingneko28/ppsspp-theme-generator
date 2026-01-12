@@ -219,14 +219,13 @@ input[type="text"]:focus {
 }
 
 /* Grouping Styles */
-/* Grouping Styles */
 details {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: transparent;
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 8px;
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--sidebar-border);
 }
 
 summary {
@@ -236,7 +235,7 @@ summary {
   font-weight: 600;
   font-size: 13px;
   color: var(--text-primary);
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--input-bg); /* Surface0 */
   list-style: none;
   transition: background-color 0.2s;
   display: flex;
@@ -247,7 +246,7 @@ summary {
 summary:focus,
 summary:hover {
   outline: none;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--input-border); /* Surface1 (Lighter) */
 }
 
 summary::after {
@@ -262,11 +261,11 @@ details[open] summary::after {
 }
 
 details[open] summary {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--sidebar-border);
 }
 
 details[open] .color-item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--sidebar-border);
   border-radius: 0;
   background: transparent;
 }
@@ -276,7 +275,7 @@ details[open] .color-item:last-child {
 }
 
 .color-item {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--input-bg);
   padding: 12px;
   /* border-radius removed here as it's controlled by container now usually, but keeping for safety if used outside */
   border-radius: 8px;
