@@ -221,10 +221,15 @@
               Save
             </button>
             <button @click="triggerLoad()" class="secondary-btn" title="Load Project from JSON">
-              <i data-lucide="upload" class="btn-icon"></i>
+              <i data-lucide="folder-open" class="btn-icon"></i>
               Load
             </button>
+            <button @click="triggerIniLoad()" class="secondary-btn" title="Import from .ini">
+              <i data-lucide="file-input" class="btn-icon"></i>
+              Import
+            </button>
             <input type="file" id="projectLoader" style="display: none" accept=".json" @change="loadProject" />
+            <input type="file" id="iniLoader" style="display: none" accept=".ini,.txt" @change="loadIniProject" />
           </div>
         </div>
 
@@ -306,7 +311,7 @@
             <aside class="psp-sidebar">
               <div class="menu-list">
                 <div class="menu-item">Load...</div>
-                <div class="menu-item active">Settings</div>
+                <div class="menu-item">Settings</div>
                 <div class="menu-item">Credits</div>
                 <div class="menu-item">www.ppsspp.org</div>
                 <div class="menu-item">Buy PPSSPP Gold 🛒</div>
@@ -346,12 +351,6 @@
           <footer class="psp-footer">
             <p>Created with meow 🐾 by Tuan Kuchiiing</p>
           </footer>
-
-          <!-- Mock Popup -->
-          <div class="mock-popup" x-show="activeTab === 'settings'" x-transition:enter="fade-in">
-            <div class="mock-popup-title">Network Status</div>
-            <div class="mock-popup-text">UPnP: Enabled</div>
-          </div>
         </div>
       </main>
     </div>

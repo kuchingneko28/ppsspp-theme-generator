@@ -188,6 +188,19 @@ function themeApp() {
         .padStart(2, "0")}${hex.slice(5, 7)}${hex.slice(3, 5)}${hex.slice(1, 3)}`.toLowerCase();
     },
 
+    ppssppToRgba(ppssppHex) {
+      // Input format: AABBGGRR (e.g. "ff0000ff" for opaque red)
+      const aa = ppssppHex.slice(0, 2);
+      const bb = ppssppHex.slice(2, 4);
+      const gg = ppssppHex.slice(4, 6);
+      const rr = ppssppHex.slice(6, 8);
+
+      const standardHex = `#${rr}${gg}${bb}`;
+      const alpha = parseFloat((parseInt(aa, 16) / 255).toFixed(2));
+
+      return { hex: standardHex, alpha: alpha };
+    },
+
     saveProject() {
       const projectData = {
         themeName: this.themeName,
@@ -208,6 +221,10 @@ function themeApp() {
       document.getElementById("projectLoader").click();
     },
 
+    triggerIniLoad() {
+      document.getElementById("iniLoader").click();
+    },
+
     loadProject(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -220,7 +237,6 @@ function themeApp() {
             this.themeName = data.themeName;
             this.colors = data.colors;
             this.updateCSS();
-            // Reset input so same file can be selected again
             event.target.value = "";
           } else {
             alert("Invalid project file structure.");
@@ -228,6 +244,46 @@ function themeApp() {
         } catch (err) {
           console.error(err);
           alert("Failed to load project file.");
+        }
+      };
+      reader.readAsText(file);
+    },
+
+    loadIniProject(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        try {
+          // Parse Theme Name from [Section]
+          const nameMatch = text.match(/^\[(.*?)\]/m);
+          if (nameMatch) {
+            this.themeName = nameMatch[1];
+          }
+
+          // Parse Colors
+          const lines = text.split(/\r?\n/);
+          lines.forEach((line) => {
+            const match = line.match(/^\s*(\w+)\s*=\s*0x([0-9a-fA-F]{8})/);
+            if (match) {
+              const key = match[1];
+              const ppssppHex = match[2];
+
+              if (this.colors[key]) {
+                const colorData = this.ppssppToRgba(ppssppHex);
+                this.colors[key] = colorData;
+              }
+            }
+          });
+
+          this.updateCSS();
+          event.target.value = "";
+          alert("Theme imported successfully!");
+        } catch (err) {
+          console.error(err);
+          alert("Failed to parse .ini file.");
         }
       };
       reader.readAsText(file);

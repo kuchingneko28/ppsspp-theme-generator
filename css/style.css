@@ -512,29 +512,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
   opacity: 0.5;
 }
 
-.mock-popup {
-  position: absolute;
-  top: 10%;
-  right: 10%;
-  width: 200px;
-  padding: 12px;
-  background-color: var(--PopupStyleBg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-}
-
-.mock-popup-title {
-  color: var(--PopupTitleStyleFg);
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.mock-popup-text {
-  color: var(--PopupStyleFg);
-  font-size: 12px;
-}
-
 /* --- Shared Utilities --- */
 .flex-center {
   display: flex;
@@ -564,7 +541,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* PPSSPP Mockup Styles */
 .navbar {
   display: flex;
-  padding: 0 32px;
+  padding: 0 16px 0 0; /* Flush left, padding right for logo */
   height: 80px;
   align-items: center;
   justify-content: space-between;
@@ -572,12 +549,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 .nav-links {
   display: flex;
-  background-color: var(--ItemStyleBg);
+  background-color: transparent; /* Removed solid bar background */
+  gap: 2px; /* Slight gap between tabs */
 }
 
 .nav-item {
   padding: 12px 24px;
   font-weight: 500;
+  background-color: var(--ItemStyleBg); /* Each tab gets its own bg */
 }
 /* Inherits .interactive-item logic via HTML or implicit grouping below */
 .nav-item,
@@ -632,7 +611,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .workspace {
   flex: 1;
   display: flex;
-  padding: 24px 32px;
+  padding: 24px 0 24px 32px; /* Flush right for sidebar */
   gap: 32px;
   overflow: hidden;
 }
@@ -671,6 +650,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
   font-size: 12px;
   color: var(--ItemStyleFg);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  text-align: center; /* Centered text */
+  width: 100%;
 }
 
 /* Mockup Tabs */
@@ -935,14 +916,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
   }
   .nav-links {
     order: 1;
-  }
-}
-
-/* Adjust Popup Position to not overlap with tabs */
-@media (max-width: 768px) {
-  .mock-popup {
-    top: 160px; /* Safe distance below Navbar (70px) + Tabs (~50px) */
-    right: 16px;
   }
 }
 
