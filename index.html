@@ -1,79 +1,359 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/script.js"></script>
     <title>PPSSPP Theme Generator</title>
   </head>
   <body>
-    <section class="theme-generator">
-      <h2>PPSSPP Theme Generator</h2>
-      <label for="themeName">
-        <span>Theme Name:</span>
-        <input type="text" id="themeName" placeholder="Please input your theme name..." />
-      </label>
-      <div class="color-inputs">
-        <label for="ItemStyleFg">
-          <span>Text Color:</span>
-          <input type="color" id="ItemStyleFg" />
-          <input type="range" id="ItemStyleFgAlpha" min="0" max="1" step="0.01" value="1" />
-        </label>
-        <label for="ItemStyleBg">
-          <span>Background Color:</span>
-          <input type="color" id="ItemStyleBg" />
-          <input type="range" id="ItemStyleBgAlpha" min="0" max="1" step="0.01" value="1" />
-        </label>
-        <label for="ItemDownStyleBg">
-          <span>Highlight Color:</span>
-          <input type="color" id="ItemDownStyleBg" />
-          <input type="range" id="ItemDownStyleBgAlpha" min="0" max="1" step="0.01" value="1" />
-        </label>
-        <label for="PopupTitleStyleFg">
-          <span>Popup Title Color:</span>
-          <input type="color" id="PopupTitleStyleFg" />
-          <input type="range" id="PopupTitleStyleFgAlpha" min="0" max="1" step="0.01" value="1" />
-        </label>
-      </div>
-      <button id="generateBtn">Download Theme</button>
-    </section>
+    <div class="app-container" x-data="themeApp()" x-init="init()">
+      <!-- Sidebar Controls -->
+      <aside class="controls-sidebar">
+        <header class="sidebar-header">
+          <h1>Theme Generator</h1>
+          <p>Create your custom PPSSPP theme</p>
+        </header>
 
-    <div class="background-wrapper">
-      <nav class="navbar">
-        <div class="nav-links">
-          <p class="active">Recent</p>
-          <p>Games</p>
-          <p>Homebrew & Demos</p>
+        <div class="control-group">
+          <label for="themeName">Theme Name</label>
+          <input type="text" id="themeName" x-model="themeName" placeholder="My Awesome Theme" />
         </div>
-        <div class="logo-container">
-          <div class="logo">
-            <img src="./logo.png" alt="Logo" />
-            <p>1.18.1</p>
-          </div>
-          <div class="logo-placeholder"></div>
-        </div>
-      </nav>
 
-      <main class="main">
-        <div class="game-container">
-          <img src="./game.jpg" alt="Game Preview" class="game-image" />
-        </div>
-        <aside class="sidebar">
-          <div class="sidebar-links">
-            <p>Load...</p>
-            <p class="active">Settings</p>
-            <p>Credits</p>
-            <p>www.ppsspp.org</p>
-            <p>Buy PPSSPP Gold <span>🛒</span></p>
+        <div class="control-group">
+          <label>Presets</label>
+          <div class="presets-container">
+            <!-- Default Blue: #244d75 (Bg) + #3999bd (Accent) -->
+            <button
+              class="preset-btn preset-default"
+              @click="applyPreset('default')"
+              item-title="Default Blue"
+            ></button>
+
+            <!-- Mocha: #1e1e2e (Bg) + #89b4fa (Accent) -->
+            <button
+              class="preset-btn preset-mocha"
+              @click="applyPreset('mocha')"
+              item-title="Catppuccin Mocha"
+            ></button>
+
+            <!-- Latte: #eff1f5 (Bg) + #1e66f5 (Accent) -->
+            <button
+              class="preset-btn preset-latte"
+              @click="applyPreset('latte')"
+              item-title="Catppuccin Latte"
+            ></button>
+
+            <!-- Randomizer: Special styling -->
+            <button class="preset-btn preset-random" @click="randomizeColors()" item-title="I'm Feeling Lucky">
+              <i data-lucide="dice-5" class="preset-icon-centered"></i>
+            </button>
           </div>
-          <p class="logout">Exit</p>
-        </aside>
+        </div>
+
+        <div class="control-group colors-group">
+          <!-- (Leaving datalist and inputs as is, they don't have problematic inline styles) -->
+          <label>Theme Colors</label>
+
+          <datalist id="recommendedColors">
+            <!-- Backgrounds -->
+            <option value="#244d75">Default Blue Bg</option>
+            <option value="#1e1e2e">Catppuccin Mocha Bg</option>
+            <option value="#eff1f5">Catppuccin Latte Bg</option>
+            <option value="#000000">Black (Standard Item Bg)</option>
+
+            <!-- Accents -->
+            <option value="#3999bd">Default Highlight</option>
+            <option value="#4cc2ed">Default Focus</option>
+            <option value="#89b4fa">Mocha Blue</option>
+            <option value="#1e66f5">Latte Blue</option>
+
+            <!-- Text -->
+            <option value="#ffffff">White (Standard Text)</option>
+            <option value="#cdd6f4">Mocha Text</option>
+            <option value="#4c4f69">Latte Text</option>
+            <option value="#59bee3">Popup Title Blue</option>
+
+            <!-- Popups -->
+            <option value="#1f4d5e">Default Popup Bg</option>
+            <option value="#181825">Mocha Popup Bg</option>
+          </datalist>
+
+          <!-- General Section -->
+          <details open>
+            <summary>Global & Text</summary>
+
+            <div class="color-item">
+              <span class="color-label">Main Background</span>
+              <div class="color-inputs">
+                <input type="color" x-model="colors.BackgroundColor.hex" @input="updateCSS" list="recommendedColors" />
+                <input
+                  type="range"
+                  x-model="colors.BackgroundColor.alpha"
+                  @input="updateCSS"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                />
+                <span class="alpha-value" x-text="Math.round(colors.BackgroundColor.alpha * 100) + '%'"></span>
+              </div>
+            </div>
+
+            <div class="color-item">
+              <span class="color-label">Text Color (Fg)</span>
+              <div class="color-inputs">
+                <input type="color" x-model="colors.ItemStyleFg.hex" @input="updateCSS" list="recommendedColors" />
+                <input type="range" x-model="colors.ItemStyleFg.alpha" @input="updateCSS" min="0" max="1" step="0.01" />
+                <span class="alpha-value" x-text="Math.round(colors.ItemStyleFg.alpha * 100) + '%'"></span>
+              </div>
+            </div>
+
+            <div class="color-item">
+              <span class="color-label">Item Background (Bg)</span>
+              <div class="color-inputs">
+                <input type="color" x-model="colors.ItemStyleBg.hex" @input="updateCSS" list="recommendedColors" />
+                <input type="range" x-model="colors.ItemStyleBg.alpha" @input="updateCSS" min="0" max="1" step="0.01" />
+                <span class="alpha-value" x-text="Math.round(colors.ItemStyleBg.alpha * 100) + '%'"></span>
+              </div>
+            </div>
+          </details>
+
+          <!-- Interaction Section -->
+          <details>
+            <summary>Navigation & Focus</summary>
+
+            <div class="color-item">
+              <span class="color-label">Selected Highlight (Down)</span>
+              <div class="color-inputs">
+                <input type="color" x-model="colors.ItemDownStyleBg.hex" @input="updateCSS" list="recommendedColors" />
+                <input
+                  type="range"
+                  x-model="colors.ItemDownStyleBg.alpha"
+                  @input="updateCSS"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                />
+                <span class="alpha-value" x-text="Math.round(colors.ItemDownStyleBg.alpha * 100) + '%'"></span>
+              </div>
+            </div>
+
+            <div class="color-item">
+              <span class="color-label">Selection Ring (Focus)</span>
+              <div class="color-inputs">
+                <input
+                  type="color"
+                  x-model="colors.ItemFocusedStyleBg.hex"
+                  @input="updateCSS"
+                  list="recommendedColors"
+                />
+                <input
+                  type="range"
+                  x-model="colors.ItemFocusedStyleBg.alpha"
+                  @input="updateCSS"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                />
+                <span class="alpha-value" x-text="Math.round(colors.ItemFocusedStyleBg.alpha * 100) + '%'"></span>
+              </div>
+            </div>
+          </details>
+
+          <!-- Popups Section -->
+          <details>
+            <summary>Popups & Headers</summary>
+
+            <div class="color-item">
+              <span class="color-label">Popup Background</span>
+              <div class="color-inputs">
+                <input type="color" x-model="colors.PopupStyleBg.hex" @input="updateCSS" list="recommendedColors" />
+                <input
+                  type="range"
+                  x-model="colors.PopupStyleBg.alpha"
+                  @input="updateCSS"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                />
+                <span class="alpha-value" x-text="Math.round(colors.PopupStyleBg.alpha * 100) + '%'"></span>
+              </div>
+            </div>
+
+            <div class="color-item">
+              <span class="color-label">Popup Title</span>
+              <div class="color-inputs">
+                <input
+                  type="color"
+                  x-model="colors.PopupTitleStyleFg.hex"
+                  @input="updateCSS"
+                  list="recommendedColors"
+                />
+                <input
+                  type="range"
+                  x-model="colors.PopupTitleStyleFg.alpha"
+                  @input="updateCSS"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                />
+                <span class="alpha-value" x-text="Math.round(colors.PopupTitleStyleFg.alpha * 100) + '%'"></span>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div class="control-group">
+          <label>Project</label>
+          <div class="actions-row">
+            <button @click="saveProject()" class="secondary-btn" title="Save Project to JSON">
+              <i data-lucide="save" class="btn-icon"></i>
+              Save
+            </button>
+            <button @click="triggerLoad()" class="secondary-btn" title="Load Project from JSON">
+              <i data-lucide="upload" class="btn-icon"></i>
+              Load
+            </button>
+            <input type="file" id="projectLoader" style="display: none" accept=".json" @change="loadProject" />
+          </div>
+        </div>
+
+        <div class="control-group">
+          <details>
+            <summary>Live INI Preview</summary>
+            <div class="code-preview-container">
+              <textarea readonly x-model="iniContent" class="code-preview"></textarea>
+            </div>
+          </details>
+        </div>
+
+        <div class="actions">
+          <button @click="downloadTheme" class="primary-btn">
+            <i data-lucide="download" class="btn-icon"></i>
+            Download Theme (.ini)
+          </button>
+        </div>
+      </aside>
+
+      <!-- Preview Area -->
+      <main class="preview-area">
+        <!-- Using variable-based class now -->
+        <div class="background-wrapper">
+          <!-- PPSSPP UI Mockup -->
+          <nav class="navbar">
+            <div class="logo-container">
+              <div class="logo">
+                <i data-lucide="gamepad-2" class="icon-logo"></i>
+                <span class="version">1.18.1</span>
+              </div>
+              <div class="logo-placeholder"></div>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button
+              class="mobile-menu-btn"
+              :class="{ 'active': mobileMenuOpen }"
+              @click="mobileMenuOpen = !mobileMenuOpen"
+            >
+              <i data-lucide="menu" x-show="!mobileMenuOpen"></i>
+              <i data-lucide="x" x-show="mobileMenuOpen" style="display: none"></i>
+            </button>
+
+            <!-- Nav Links (Desktop: Row, Mobile: Dropdown) -->
+            <div class="nav-links" :class="{ 'open': mobileMenuOpen }">
+              <div class="nav-item active">Recent</div>
+              <div class="nav-item">Games</div>
+              <div class="nav-item">Homebrew & Demos</div>
+            </div>
+          </nav>
+
+          <!-- Mockup Tabs -->
+          <div class="mockup-tabs">
+            <button class="mockup-tab" :class="{ 'active': activeTab === 'home' }" @click="activeTab = 'home'">
+              <i data-lucide="home"></i> Home
+            </button>
+            <button class="mockup-tab" :class="{ 'active': activeTab === 'settings' }" @click="activeTab = 'settings'">
+              <i data-lucide="settings"></i> Settings
+            </button>
+          </div>
+
+          <!-- VIEW: Home (Game Grid) -->
+          <div class="workspace" x-show="activeTab === 'home'" x-transition:enter="fade-in">
+            <div class="game-grid">
+              <!-- Mock Game Card -->
+              <div class="game-card">
+                <div class="card-placeholder-image">
+                  <i data-lucide="joystick" class="icon-joystick"></i>
+                </div>
+                <div class="game-info">Game Title</div>
+              </div>
+              <div class="game-card">
+                <div class="game-placeholder"></div>
+                <div class="game-info">Another Game</div>
+              </div>
+            </div>
+
+            <aside class="psp-sidebar">
+              <div class="menu-list">
+                <div class="menu-item">Load...</div>
+                <div class="menu-item active">Settings</div>
+                <div class="menu-item">Credits</div>
+                <div class="menu-item">www.ppsspp.org</div>
+                <div class="menu-item">Buy PPSSPP Gold 🛒</div>
+                <div class="menu-item logout">Exit</div>
+              </div>
+            </aside>
+          </div>
+
+          <!-- VIEW: Settings (List Mockup) -->
+          <div
+            class="workspace settings-workspace"
+            x-show="activeTab === 'settings'"
+            style="display: none"
+            x-transition:enter="fade-in"
+          >
+            <div class="settings-list">
+              <div class="settings-header">Graphics</div>
+              <div class="settings-item">
+                <span class="item-label">Backend</span>
+                <span class="item-value">Vulkan</span>
+              </div>
+              <div class="settings-item active">
+                <span class="item-label">Rendering Resolution</span>
+                <span class="item-value">2x PSP</span>
+              </div>
+
+              <div class="settings-header">Audio</div>
+              <div class="settings-item disabled">
+                <span class="item-label">Enable Audio (Disabled)</span>
+                <span class="item-toggle-off">☐</span>
+              </div>
+
+              <div class="settings-info">This is info text (InfoStyleFg). It explains what the setting does.</div>
+            </div>
+          </div>
+
+          <footer class="psp-footer">
+            <p>Created with meow 🐾 by Tuan Kuchiiing</p>
+          </footer>
+
+          <!-- Mock Popup -->
+          <div class="mock-popup" x-show="activeTab === 'settings'" x-transition:enter="fade-in">
+            <div class="mock-popup-title">Network Status</div>
+            <div class="mock-popup-text">UPnP: Enabled</div>
+          </div>
+        </div>
       </main>
     </div>
-    <footer class="footer">
-      <p>Created with meow 🐾 by Tuan Kuchiiing</p>
-    </footer>
-
-    <script src="script.js" defer></script>
   </body>
 </html>
